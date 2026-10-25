@@ -4,6 +4,13 @@ use raylib::prelude::*;
 use std::sync::mpsc;
 use std::thread;
 
+#[derive(Clone, Copy, PartialEq)]
+enum Role {
+    Menu,
+    Client,
+    Server,
+}
+
 fn main() {
     let (mut rl, thread) = raylib::init().size(800, 600).title("Rust Co-op").build();
 
@@ -12,20 +19,30 @@ fn main() {
     let (tx, rx) = mpsc::channel::<String>();
 
     let args: Vec<String> = std::env::args().collect();
-    let role = args.get(1).map(String::as_str).unwrap_or("client");
+    let role_str = args.get(1).map(String::as_str).unwrap_or("client");
+    let mut role = Role::Menu;
+    if role_str == "client" {
+        role = Role::Client;
+    } else if role_str == "server" {
+        role = Role::Server;
+    }
 
     // Networking runs separately from the game loop.
     let network_thread = match role {
-        "server" => thread::spawn(move || {
+        Role::Server => Some(thread::spawn(move || {
             if let Err(error) = network::run_server(tx) {
                 eprintln!("Server error: {error}");
             }
-        }),
-        _ => thread::spawn(move || {
+        })),
+        Role::Client => Some(thread::spawn(move || {
             if let Err(error) = network::run_client(tx) {
                 eprintln!("Client error: {error}");
             }
-        }),
+        })),
+        _ => {
+            println!("Role not selected");
+            None
+        }
     };
 
     let mut x = 400.0;
@@ -60,7 +77,12 @@ fn main() {
         d.draw_text("Move with WASD", 20, 65, 20, Color::DARKGRAY);
         d.draw_text(&format!("Network: {status}"), 20, 100, 20, Color::MAROON);
 
-        d.draw_circle(x as i32, y as i32, 20.0, Color::BLUE);
+        if role == Role::Server {
+            d.draw_circle(x as i32, y as i32, 20.0, Color::BLUE);
+        }
+        if role == Role::Client {
+            d.draw_circle(x as i32, y as i32, 20.0, Color::RED);
+        }
     }
 
     // Don't join here: the network thread may be blocked waiting for a connection.
