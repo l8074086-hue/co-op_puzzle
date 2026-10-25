@@ -1,0 +1,5 @@
+(A) Make game state struct
+(A) Send game state struct through the network
+(B) Work on the game and renderer
+(A) Add a server list and server scanning
+(C) Change colors depending on if your Player 1 or Player 2
