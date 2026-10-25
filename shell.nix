@@ -6,7 +6,6 @@ pkgs.mkShell {
   packages = with pkgs; [
     rustc
     cargo
-    cmake
     pkg-config
     llvmPackages.libclang
     llvmPackages.libllvm

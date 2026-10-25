@@ -13,3 +13,19 @@ The repo contains the nix.shell required so just simply:
 ```nix
 nix-shell
 ```
+## Arch
+```sh
+sudo pacman -S cargo cmake rustc raylib clang
+```
+## Other Operating Systems
+Download cargo, rustc and raylib with the respective instructions for your OS
+# Running the game
+Currently to run as server you do:
+```sh
+cargo run -- server
+```
+and for client:
+```sh
+cargo run -- client
+```
+but eventually we will make it so you can select inside the game itself
