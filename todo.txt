@@ -2,4 +2,6 @@
 (A) Send game state struct through the network
 (B) Work on the game and renderer
 (A) Add a server list and server scanning
-(C) Change colors depending on if your Player 1 or Player 2
+x 2026-10-26 2026-10-26 Change colors depending on if your Player 1 or Player 2
+(B) 2026-10-26 Make server authorative
+(A) 2026-10-26 Split messages into different types
